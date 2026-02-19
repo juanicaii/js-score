@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Midnight Blue surfaces */
+  --color-surface-950: #060918;
+  --color-surface-900: #0a0e1f;
+  --color-surface-800: #111638;
+  --color-surface-700: #1a2048;
+  --color-surface-600: #253060;
+
+  /* Primary blues */
+  --color-primary-300: #93aafd;
+  --color-primary-400: #6b8afc;
+  --color-primary-500: #4a6cf7;
+  --color-primary-600: #3451d1;
+  --color-primary-700: #2a3fa8;
+
+  /* Accent gold */
+  --color-accent-300: #fcd779;
+  --color-accent-400: #f5c542;
+  --color-accent-500: #d4a017;
+  --color-accent-600: #b8860b;
+
+  /* Success teal */
+  --color-success-400: #5eead4;
+  --color-success-500: #2dd4a8;
+
+  /* Danger */
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+
+  /* Text */
+  --color-text-primary: #eaecf5;
+  --color-text-secondary: #a3aed0;
+  --color-text-muted: #677aae;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Glass utilities */
+@utility glass {
+  background: rgba(15, 23, 60, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 230, 0.12);
 }
 
+@utility glass-heavy {
+  background: rgba(15, 23, 60, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 230, 0.12);
+}
+
+@utility glass-light {
+  background: rgba(15, 23, 60, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 230, 0.08);
+}
+
+/* Icon glow utilities */
+@utility icon-glow-blue {
+  filter: drop-shadow(0 0 8px rgba(74, 108, 247, 0.3));
+}
+@utility icon-glow-gold {
+  filter: drop-shadow(0 0 8px rgba(245, 197, 66, 0.3));
+}
+
+/* Glow utilities */
+@utility glow-blue {
+  box-shadow: 0 0 20px rgba(74, 108, 247, 0.15), 0 0 40px rgba(74, 108, 247, 0.05);
+}
+
+@utility glow-gold {
+  box-shadow: 0 0 20px rgba(245, 197, 66, 0.15), 0 0 40px rgba(245, 197, 66, 0.05);
+}
+
+/* Glass card with hover */
+.glass-card {
+  background: rgba(15, 23, 60, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 230, 0.12);
+  border-radius: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.glass-card:hover {
+  border-color: rgba(107, 138, 252, 0.3);
+  box-shadow: 0 0 24px rgba(74, 108, 247, 0.12), 0 0 48px rgba(74, 108, 247, 0.04);
+}
+
+/* Glass input */
+.glass-input {
+  background: rgba(15, 23, 60, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(148, 163, 230, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.glass-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.glass-input:focus {
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 2px rgba(107, 138, 252, 0.2);
+}
+
+/* Glow hover classes */
+.glow-blue-hover:hover {
+  box-shadow: 0 0 24px rgba(74, 108, 247, 0.25), 0 0 48px rgba(74, 108, 247, 0.08);
+}
+
+.glow-gold-hover:hover {
+  box-shadow: 0 0 24px rgba(245, 197, 66, 0.25), 0 0 48px rgba(245, 197, 66, 0.08);
+}
+
+/* Body gradient */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(74, 108, 247, 0.08), transparent),
+    linear-gradient(to bottom, var(--color-surface-950), var(--color-surface-900));
+  background-attachment: fixed;
+  color: var(--color-text-primary);
+  min-height: 100vh;
+}
+
+/* Dialog backdrop */
+dialog::backdrop {
+  background: rgba(6, 9, 24, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
