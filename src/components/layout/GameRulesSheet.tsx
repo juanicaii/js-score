@@ -237,6 +237,37 @@ const RULES: Partial<Record<GameType, GameRules>> = {
       },
     ],
   },
+  chinchon: {
+    title: "Reglas — Chinchon",
+    sections: [
+      {
+        heading: "Objetivo",
+        text: "No llegar al puntaje de eliminacion. El ultimo jugador en pie gana la partida.",
+      },
+      {
+        heading: "Como se juega",
+        text: "Se reparten 7 cartas espanolas a cada jugador. Por turnos, cada jugador roba una carta del mazo o del descarte y luego descarta una. El objetivo es formar combinaciones (escaleras del mismo palo o grupos del mismo numero) para quedarse con la menor cantidad de puntos en la mano. Cuando un jugador puede combinar todas sus cartas, corta y los demas suman los puntos de las cartas que no pudieron ligar.",
+      },
+      {
+        heading: "Valor de las cartas",
+        items: [
+          { label: "1 (As)", value: "1 pt" },
+          { label: "2 al 7", value: "su valor" },
+          { label: "10 (Sota)", value: "10 pts" },
+          { label: "11 (Caballo)", value: "10 pts" },
+          { label: "12 (Rey)", value: "10 pts" },
+        ],
+      },
+      {
+        heading: "Chinchon",
+        text: "7 cartas en escalera del mismo palo. Vale -10 puntos para quien lo tiene. Si la regla 'Chinchon gana' esta activada, gana la partida automaticamente.",
+      },
+      {
+        heading: "Eliminacion",
+        text: "Cuando un jugador alcanza o supera el puntaje limite (100, 150 o 200), queda eliminado y no participa en las rondas siguientes.",
+      },
+    ],
+  },
   truco: {
     title: "Reglas — Truco",
     sections: [

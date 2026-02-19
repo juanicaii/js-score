@@ -1,6 +1,6 @@
 import { db } from "./index";
 import { generateId } from "@/lib/utils/id";
-import type { TrucoScore, GeneralaScore, DiezMilScore, DiezMilTurn } from "@/lib/types/score";
+import type { TrucoScore, GeneralaScore, DiezMilScore, DiezMilTurn, ChinchonScore, ChinchonRound } from "@/lib/types/score";
 import type { GeneralaCategory } from "@/lib/game-logic/generala";
 
 export async function createTrucoScores(gameId: string): Promise<TrucoScore[]> {
@@ -111,4 +111,63 @@ export async function undoLastDiezMilTurn(id: string): Promise<void> {
 
 export async function deleteDiezMilScores(gameId: string): Promise<void> {
   await db.diez_mil_scores.where("game_id").equals(gameId).delete();
+}
+
+// --- Chinchón ---
+
+export async function createChinchonScores(
+  gameId: string,
+  playerIds: string[]
+): Promise<ChinchonScore[]> {
+  const scores: ChinchonScore[] = playerIds.map((playerId) => ({
+    id: generateId(),
+    game_id: gameId,
+    player_id: playerId,
+    rounds: [],
+    total_points: 0,
+    is_eliminated: false,
+  }));
+  await db.chinchon_scores.bulkAdd(scores);
+  return scores;
+}
+
+export async function addChinchonRound(
+  updates: { id: string; round: ChinchonRound; newTotal: number; isEliminated: boolean }[]
+): Promise<void> {
+  await db.transaction("rw", db.chinchon_scores, async () => {
+    for (const u of updates) {
+      const score = await db.chinchon_scores.get(u.id);
+      if (!score) continue;
+      await db.chinchon_scores.update(u.id, {
+        rounds: [...score.rounds, u.round],
+        total_points: u.newTotal,
+        is_eliminated: u.isEliminated,
+      });
+    }
+  });
+}
+
+export async function undoLastChinchonRound(gameId: string): Promise<void> {
+  const scores = await db.chinchon_scores.where("game_id").equals(gameId).toArray();
+  if (scores.length === 0) return;
+
+  const maxRounds = Math.max(...scores.map((s) => s.rounds.length));
+  if (maxRounds === 0) return;
+
+  await db.transaction("rw", db.chinchon_scores, async () => {
+    for (const score of scores) {
+      if (score.rounds.length < maxRounds) continue;
+      const rounds = score.rounds.slice(0, -1);
+      const total = rounds.reduce((sum, r) => sum + r.points, 0);
+      await db.chinchon_scores.update(score.id, {
+        rounds,
+        total_points: total,
+        is_eliminated: false,
+      });
+    }
+  });
+}
+
+export async function deleteChinchonScores(gameId: string): Promise<void> {
+  await db.chinchon_scores.where("game_id").equals(gameId).delete();
 }
