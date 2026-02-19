@@ -25,4 +25,8 @@ db.version(3).stores({
   generala_scores: "id, game_id, player_id",
 });
 
+db.version(4).stores({
+  generala_scores: "id, game_id, player_id, [game_id+player_id]",
+});
+
 export { db };

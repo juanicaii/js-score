@@ -12,6 +12,7 @@ import { useActiveGame, useGame } from "@/hooks/useGame";
 import { usePlayers } from "@/hooks/usePlayers";
 import { useGeneralaScores } from "@/hooks/useGeneralaScores";
 import { createGame, finishGame, deleteGame } from "@/lib/db/games";
+import { db } from "@/lib/db";
 import {
   createGeneralaScores,
   updateGeneralaScore,
@@ -62,14 +63,37 @@ export default function GeneralaPage() {
     }
   }, [activeGame, gameId]);
 
-  // Order scores by player_ids order from game
+  // Order scores by player_ids order from game (deduplicate by player_id)
   const orderedScores = useMemo(() => {
     if (!scores || !game) return [];
+    const seen = new Set<string>();
+    const deduped = scores.filter((s) => {
+      if (seen.has(s.player_id)) return false;
+      seen.add(s.player_id);
+      return true;
+    });
     const orderMap = new Map(game.player_ids.map((id, i) => [id, i]));
-    return [...scores].sort(
+    return deduped.sort(
       (a, b) => (orderMap.get(a.player_id) ?? 0) - (orderMap.get(b.player_id) ?? 0)
     );
   }, [scores, game]);
+
+  // Cleanup duplicate score records in DB
+  useEffect(() => {
+    if (!scores || scores.length === 0) return;
+    const seen = new Set<string>();
+    const dupeIds: string[] = [];
+    for (const s of scores) {
+      if (seen.has(s.player_id)) {
+        dupeIds.push(s.id);
+      } else {
+        seen.add(s.player_id);
+      }
+    }
+    if (dupeIds.length > 0) {
+      db.generala_scores.bulkDelete(dupeIds);
+    }
+  }, [scores]);
 
   // Resolve player objects for the game
   const gamePlayers = useMemo(() => {
@@ -79,15 +103,19 @@ export default function GeneralaPage() {
       .filter(Boolean) as NonNullable<(typeof allPlayers)[number]>[];
   }, [allPlayers, game]);
 
-  // Auto-recover: if game exists but scores are missing, create them
+  // Auto-recover: create scores for players that are missing them
   const recoveredRef = useRef(false);
   useEffect(() => {
     if (!game || game.status === "finished" || recoveredRef.current) return;
-    if (!scores || scores.length > 0) return;
+    if (!scores) return;
     if (game.player_ids.length === 0) return;
 
+    const existingPlayerIds = new Set(scores.map((s) => s.player_id));
+    const missingPlayerIds = game.player_ids.filter((id) => !existingPlayerIds.has(id));
+    if (missingPlayerIds.length === 0) return;
+
     recoveredRef.current = true;
-    createGeneralaScores(game.id, game.player_ids);
+    createGeneralaScores(game.id, missingPlayerIds);
   }, [game, scores]);
 
   // Auto-finish when all categories filled
