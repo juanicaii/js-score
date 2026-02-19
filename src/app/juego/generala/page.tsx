@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { GameRulesButton } from "@/components/layout/GameRulesSheet";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { PlayerPicker } from "@/components/core/PlayerPicker";
 import { GeneralaBoard } from "@/components/generala/GeneralaBoard";
@@ -218,7 +219,7 @@ export default function GeneralaPage() {
   // --- SETUP ---
   if (phase === "setup") {
     return (
-      <AppShell title="Generala" showBack>
+      <AppShell title="Generala" showBack headerRight={<GameRulesButton gameType="generala" />}>
         <div className="flex flex-col gap-4">
           {hasOtherActiveGame && (
             <div className="glass-card border-accent-500/20 p-4 text-center">
@@ -257,7 +258,7 @@ export default function GeneralaPage() {
   // --- LOADING ---
   if (!scores || scores.length === 0 || !game || gamePlayers.length === 0) {
     return (
-      <AppShell title="Generala" showBack>
+      <AppShell title="Generala" showBack headerRight={<GameRulesButton gameType="generala" />}>
         <div className="flex items-center justify-center py-12">
           <p className="text-text-muted text-sm">Cargando...</p>
         </div>
@@ -274,7 +275,7 @@ export default function GeneralaPage() {
     const isTie = !winnerId;
 
     return (
-      <AppShell title="Generala" showBack>
+      <AppShell title="Generala" showBack headerRight={<GameRulesButton gameType="generala" />}>
         <div className="flex flex-col gap-4">
           <div className="glass-card border-accent-500/30 glow-gold flex flex-col items-center gap-3 p-6">
             <Trophy size={40} className="text-accent-300 icon-glow-gold" />
@@ -314,7 +315,7 @@ export default function GeneralaPage() {
 
   // --- PLAYING ---
   return (
-    <AppShell title="Generala" showBack>
+    <AppShell title="Generala" showBack headerRight={<GameRulesButton gameType="generala" />}>
       <div className="flex flex-col gap-4">
         <GeneralaBoard
           scores={orderedScores}

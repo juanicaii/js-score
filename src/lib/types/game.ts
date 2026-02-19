@@ -23,6 +23,7 @@ export interface TrucoConfig {
 
 export interface DiezMilConfig {
   target_score: number;
+  require_1000: boolean;
 }
 
 export interface UniversalConfig {
