@@ -14,8 +14,8 @@ export function AppShell({ title, showBack = false, headerRight, children }: App
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen flex-col pb-20">
-      <header className="sticky top-0 z-40 glass-heavy">
+    <div className="flex min-h-screen flex-col" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}>
+      <header className="sticky top-0 z-40 glass-heavy" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="mx-auto flex max-w-lg items-center gap-3 px-4 py-3">
           {showBack && (
             <button
