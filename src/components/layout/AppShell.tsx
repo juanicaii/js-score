@@ -6,10 +6,11 @@ import { ChevronLeft } from "lucide-react";
 interface AppShellProps {
   title: string;
   showBack?: boolean;
+  headerRight?: React.ReactNode;
   children: React.ReactNode;
 }
 
-export function AppShell({ title, showBack = false, children }: AppShellProps) {
+export function AppShell({ title, showBack = false, headerRight, children }: AppShellProps) {
   const router = useRouter();
 
   return (
@@ -25,7 +26,8 @@ export function AppShell({ title, showBack = false, children }: AppShellProps) {
               <ChevronLeft size={20} strokeWidth={2} />
             </button>
           )}
-          <h1 className="text-lg font-bold text-text-primary">{title}</h1>
+          <h1 className="text-lg font-bold text-text-primary flex-1">{title}</h1>
+          {headerRight}
         </div>
       </header>
       <main className="mx-auto w-full max-w-lg flex-1 px-4 py-4">

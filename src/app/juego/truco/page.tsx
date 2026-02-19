@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Trophy } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
+import { GameRulesButton } from "@/components/layout/GameRulesSheet";
 import { ConfirmDialog } from "@/components/layout/ConfirmDialog";
 import { TrucoBoard } from "@/components/truco/TrucoBoard";
 import { TrucoControls } from "@/components/truco/TrucoControls";
@@ -136,7 +137,7 @@ export default function TrucoPage() {
   // --- SETUP ---
   if (phase === "setup") {
     return (
-      <AppShell title="Truco" showBack>
+      <AppShell title="Truco" showBack headerRight={<GameRulesButton gameType="truco" />}>
         <div className="flex flex-col gap-4">
           {hasOtherActiveGame && (
             <div className="glass-card border-accent-500/20 p-4 text-center">
@@ -218,7 +219,7 @@ export default function TrucoPage() {
   // --- LOADING ---
   if (!scores || !config || !game) {
     return (
-      <AppShell title="Truco" showBack>
+      <AppShell title="Truco" showBack headerRight={<GameRulesButton gameType="truco" />}>
         <div className="flex items-center justify-center py-12">
           <p className="text-text-muted text-sm">Cargando...</p>
         </div>
@@ -236,7 +237,7 @@ export default function TrucoPage() {
     const winnerName = getTeamName(winner, config);
 
     return (
-      <AppShell title="Truco" showBack>
+      <AppShell title="Truco" showBack headerRight={<GameRulesButton gameType="truco" />}>
         <div className="flex flex-col gap-4">
           <div className="glass-card border-accent-500/30 glow-gold flex flex-col items-center gap-3 p-6">
             <Trophy size={40} className="text-accent-300 icon-glow-gold" />
@@ -274,7 +275,7 @@ export default function TrucoPage() {
 
   // --- PLAYING ---
   return (
-    <AppShell title="Truco" showBack>
+    <AppShell title="Truco" showBack headerRight={<GameRulesButton gameType="truco" />}>
       <div className="flex flex-col min-h-[calc(100dvh-12rem)]">
         {/* Board fills available space */}
         <div className="flex-1 flex flex-col">

@@ -1,6 +1,6 @@
 import { db } from "./index";
 import { generateId } from "@/lib/utils/id";
-import type { TrucoScore, GeneralaScore } from "@/lib/types/score";
+import type { TrucoScore, GeneralaScore, DiezMilScore, DiezMilTurn } from "@/lib/types/score";
 import type { GeneralaCategory } from "@/lib/game-logic/generala";
 
 export async function createTrucoScores(gameId: string): Promise<TrucoScore[]> {
@@ -69,4 +69,46 @@ export async function updateGeneralaScore(
 
 export async function deleteGeneralaScores(gameId: string): Promise<void> {
   await db.generala_scores.where("game_id").equals(gameId).delete();
+}
+
+// --- Diez Mil ---
+
+export async function createDiezMilScores(
+  gameId: string,
+  playerIds: string[]
+): Promise<DiezMilScore[]> {
+  const scores: DiezMilScore[] = playerIds.map((playerId) => ({
+    id: generateId(),
+    game_id: gameId,
+    player_id: playerId,
+    turns: [],
+    total_points: 0,
+  }));
+  await db.diez_mil_scores.bulkAdd(scores);
+  return scores;
+}
+
+export async function addDiezMilTurn(
+  id: string,
+  turn: DiezMilTurn,
+  newTotal: number
+): Promise<void> {
+  const score = await db.diez_mil_scores.get(id);
+  if (!score) return;
+  await db.diez_mil_scores.update(id, {
+    turns: [...score.turns, turn],
+    total_points: newTotal,
+  });
+}
+
+export async function undoLastDiezMilTurn(id: string): Promise<void> {
+  const score = await db.diez_mil_scores.get(id);
+  if (!score || score.turns.length === 0) return;
+  const turns = score.turns.slice(0, -1);
+  const total = turns.length > 0 ? turns[turns.length - 1].total_after : 0;
+  await db.diez_mil_scores.update(id, { turns, total_points: total });
+}
+
+export async function deleteDiezMilScores(gameId: string): Promise<void> {
+  await db.diez_mil_scores.where("game_id").equals(gameId).delete();
 }
