@@ -26,6 +26,9 @@ const stickyStyle = {
   boxShadow: "2px 0 4px rgba(0,0,0,0.3)",
 };
 
+// Index of last numeric category ("6") — separator goes after it
+const SECTION_BREAK_AFTER = 5;
+
 export function GeneralaBoard({
   scores,
   players,
@@ -35,11 +38,11 @@ export function GeneralaBoard({
   return (
     <div className="glass-card overflow-hidden p-0">
       <div className="overflow-x-auto">
-        <table className="text-sm" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
+        <table className="w-full text-sm" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
           <thead>
             <tr>
               <th
-                className="sticky left-0 z-10 px-3 py-2.5 text-left text-xs font-semibold text-text-secondary"
+                className="sticky left-0 z-10 px-3 py-2.5 text-left text-sm font-semibold text-text-secondary"
                 style={stickyStyle}
               >
                 Categoría
@@ -49,7 +52,7 @@ export function GeneralaBoard({
                 return (
                   <th
                     key={score.id}
-                    className="px-3 py-2.5 text-center text-xs font-semibold text-text-secondary min-w-[4.5rem] whitespace-nowrap"
+                    className="px-3 py-2.5 text-center text-sm font-semibold text-text-secondary min-w-[5.5rem] whitespace-nowrap"
                   >
                     {player?.name ?? "—"}
                   </th>
@@ -60,13 +63,20 @@ export function GeneralaBoard({
           <tbody>
             {CATEGORIES.map((cat, i) => {
               const isLast = i === CATEGORIES.length - 1;
+              const isSectionBreak = i === SECTION_BREAK_AFTER;
               return (
                 <tr
                   key={cat.key}
-                  className={isLast ? "" : "border-b border-white/5"}
+                  className={
+                    isSectionBreak
+                      ? "border-b border-white/15"
+                      : isLast
+                        ? ""
+                        : "border-b border-white/5"
+                  }
                 >
                   <td
-                    className="sticky left-0 z-10 px-3 py-1.5 text-xs font-medium text-text-primary whitespace-nowrap"
+                    className="sticky left-0 z-10 px-3 py-1.5 text-sm font-medium text-text-primary whitespace-nowrap"
                     style={stickyStyle}
                   >
                     {cat.label}
@@ -78,11 +88,11 @@ export function GeneralaBoard({
                     const isCrossed = val === 0;
 
                     return (
-                      <td key={score.id} className="px-1 py-0.5 text-center">
+                      <td key={score.id} className="px-2 py-1 text-center">
                         <button
                           onClick={() => onCellTap(score.id, cat.key, val)}
                           disabled={disabled}
-                          className={`w-full rounded-lg px-2 py-1.5 text-sm font-medium transition-all active:scale-95 disabled:pointer-events-none ${
+                          className={`w-full rounded-lg px-2 py-2.5 min-h-[2.75rem] text-sm font-medium transition-all active:scale-95 disabled:pointer-events-none ${
                             isEmpty
                               ? "text-text-muted hover:bg-white/5"
                               : isCrossed
@@ -90,7 +100,7 @@ export function GeneralaBoard({
                                 : "text-text-primary"
                           }`}
                         >
-                          {isEmpty ? "·" : display}
+                          {isEmpty ? "–" : display}
                         </button>
                       </td>
                     );
@@ -102,7 +112,7 @@ export function GeneralaBoard({
           <tfoot>
             <tr className="border-t border-white/10">
               <td
-                className="sticky left-0 z-10 px-3 py-2.5 text-xs font-bold text-accent-300"
+                className="sticky left-0 z-10 px-3 py-2.5 text-sm font-bold text-accent-300"
                 style={stickyStyle}
               >
                 TOTAL
